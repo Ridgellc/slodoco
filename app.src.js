@@ -1,0 +1,192 @@
+// SloDoCo sample site. Data comes straight from slodoco.com (Oct 2026).
+const SHOPS = [
+  { id: "foothill", name: "SLO Foothill", phone: "(805) 782-9766", address: "793 E. Foothill Blvd., Ste. F", city: "San Luis Obispo, CA 93405",
+    hours: "24/7", open: null, close: null, orders: "sloorders@slodoco.com" },
+  { id: "higuera", name: "SLO Higuera", phone: "(805) 439-1062", address: "195 Higuera Street", city: "San Luis Obispo, CA 93401",
+    hours: "5 AM – 12 AM", open: 5, close: 24, orders: "hisloorders@slodoco.com" },
+  { id: "paso", name: "Paso Robles", phone: "(805) 226-5058", address: "2110 Spring Street", city: "Paso Robles, CA 93446",
+    hours: "5 AM – 9 PM", open: 5, close: 21, orders: "pasobusiness@slodoco.com" },
+  { id: "goleta", name: "Goleta", phone: "(805) 770-3060", address: "290 Storke Road, Ste. A", city: "Goleta, CA 93117",
+    hours: "24/7", open: null, close: null, orders: "goletaorders@slodoco.com" },
+];
+
+const SPECIALS = [
+  { name: "Web Weaver", tag: "Gluten-free & vegan", img: "Gluten-Free-Web-Weaver.webp", out: "7 AM", price: "$4.10",
+    text: "Chocolate chocolate-chip cake dipped in pumpkin icing, topped with an Oreo spider." },
+  { name: "Boo Bar", img: "Boo-Bars.webp", out: "9 AM", price: "$3.50",
+    text: "A chocolate bar topped with whipped cream ghosts and candy pumpkins." },
+  { name: "The Itsy Bitsy Crunch", img: "Itsy-Bitsy-Crunch.webp", out: "9 AM", price: "$3.00",
+    text: "Devil's food cake, chocolate icing and sprinkles, icing eyeballs and pretzel legs." },
+  { name: "Pumpkin Brûlée Bites", img: "Pumpkin-Brulee-Bites.webp", out: "10 AM", price: "75¢ each · $8.10 a dozen",
+    text: "Caramelized donut holes filled with pumpkin pie filling." },
+  { name: "Coraline Raised", img: "Coraline-Raised.webp", out: "10 AM", price: "$3.80",
+    text: "Marshmallow with candy buttons, or strawberry piped like the cake from Coraline." },
+  { name: "The Boo Bucket", img: "The-Boo-Bucket.webp", out: "10 AM", price: "$4.00",
+    text: "Vanilla raised, whipped cream and candy, with a black licorice handle." },
+  { name: "Caramel Apple Oogie Boogie", img: "Carmel-Apple-Oogie-Boogie.webp", out: "11 AM", price: "$4.00",
+    text: "Green apple icing, caramel mousse filling, piped stitches and gummy worms." },
+  { name: "Chocolate Ghostface", img: "Chocolate-Ghostface.webp", out: "11 AM", price: "$4.00",
+    text: "Chocolate-dipped raised donut piped like Ghostface, filled with chocolate dobash." },
+  { name: "Monster Mash Cakes", img: "Monster-Mash-Cakes.webp", out: "11 AM", price: "$2.95",
+    text: "Cake donuts in colored vanilla, piped into a cast of little monsters." },
+  { name: "Vintage Carnival Creeps", img: "The-Vintage-Carnival-Creeps.webp", out: "11 AM", price: "$3.80",
+    text: "Black chocolate or orange pumpkin icing, piped like creepy vintage Halloween." },
+];
+
+const MENU = /*MENU*/;
+
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// ---------- live shop board (Pacific time, wherever the visitor is)
+function pacificNow() {
+  const p = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "numeric",
+    hourCycle: "h23", weekday: "long" }).formatToParts(new Date());
+  const get = t => p.find(x => x.type === t).value;
+  return { h: +get("hour"), m: +get("minute"), day: get("weekday") };
+}
+const fmtHour = h => (h % 24 === 0 ? "midnight" : `${h % 12 || 12} ${h % 24 < 12 ? "AM" : "PM"}`);
+
+function status(shop, now) {
+  if (shop.open === null) return { open: true, line: "Open 24/7", sub: "Always frying" };
+  const t = now.h + now.m / 60;
+  if (t >= shop.open && t < shop.close) {
+    const left = shop.close - t;
+    return { open: true, line: "Open now", sub: left <= 1 ? `Closing soon, at ${fmtHour(shop.close)}` : `Until ${fmtHour(shop.close)}` };
+  }
+  return { open: false, line: "Closed", sub: `Opens at ${fmtHour(shop.open)}` };
+}
+
+const mapLink = s => "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(`SloDoCo ${s.address}, ${s.city}`);
+const tel = s => "tel:+1" + s.phone.replace(/\D/g, "");
+
+function renderBoard() {
+  const now = pacificNow();
+  const time = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "2-digit" }).format(new Date());
+  $("#clock").textContent = `It's ${time} on ${now.day} on the Central Coast.`;
+  $("#board").innerHTML = SHOPS.map(s => {
+    const st = status(s, now);
+    return `<li class="shop ${st.open ? "is-open" : "is-closed"}">
+      <h3>${esc(s.name)}</h3>
+      <p class="state"><span class="dot" aria-hidden="true"></span>${st.line}</p>
+      <p class="sub">${esc(st.sub)}</p>
+      <p class="addr">${esc(s.address)}<br>${esc(s.city)}</p>
+      <div class="shop-links">
+        <a href="${tel(s)}">Call ${esc(s.phone)}</a>
+        <a href="${mapLink(s)}" target="_blank" rel="noopener">Directions</a>
+      </div>
+    </li>`;
+  }).join("");
+}
+
+// ---------- specials
+function renderSpecials() {
+  $("#specials-list").innerHTML = SPECIALS.map(s => `<li class="special">
+    <img src="img/${s.img}" alt="${esc(s.name)} donut" loading="lazy">
+    <div class="special-body">
+      <h3>${esc(s.name)}</h3>
+      ${s.tag ? `<p class="tag">${esc(s.tag)}</p>` : ""}
+      <p>${esc(s.text)}</p>
+      <p class="meta"><span>Out by ${s.out}</span><span>${esc(s.price)}</span></p>
+    </div>
+  </li>`).join("");
+}
+
+// ---------- menu case
+let activeCat = "All", expanded = false;
+const PREVIEW = 14;
+function renderChips() {
+  const cats = ["All", ...MENU.map(c => c.name)];
+  $("#chips").innerHTML = cats.map(c =>
+    `<button type="button" class="chip" aria-pressed="${c === activeCat}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+}
+function renderCase() {
+  const q = $("#q").value.trim().toLowerCase();
+  const items = [];
+  for (const c of MENU) {
+    if (activeCat !== "All" && c.name !== activeCat) continue;
+    for (const it of c.items) {
+      const label = `${it.name} ${c.name}`.toLowerCase();
+      if (q && !q.split(/\s+/).every(w => label.includes(w))) continue;
+      items.push({ ...it, cat: c.name });
+    }
+  }
+  $("#count").textContent = items.length
+    ? `${items.length} ${items.length === 1 ? "donut" : "donuts"}${activeCat !== "All" ? " in " + activeCat : ""}${q ? ` matching “${$("#q").value.trim()}”` : ""}`
+    : `Nothing matches “${$("#q").value.trim()}”. Try a flavor like maple, chocolate or lavender.`;
+  // The full case is long: start with a few rows unless they've filtered or searched.
+  const shown = !expanded && activeCat === "All" && !q ? items.slice(0, PREVIEW) : items;
+  $("#more").hidden = shown.length === items.length;
+  $("#more").textContent = `Show all ${items.length} donuts`;
+  $("#case").innerHTML = shown.map(it => `<li class="donut">
+    ${it.img ? `<img src="img/${it.img}" alt="" loading="lazy" width="210" height="175">` : `<span class="noimg" aria-hidden="true"></span>`}
+    <span class="d-name">${esc(it.name)}</span>
+    <span class="d-cat">${esc(it.cat)}</span>
+  </li>`).join("");
+}
+
+// ---------- forms (demo: show where it would go instead of sending)
+function fillShopSelects() {
+  const opts = SHOPS.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join("");
+  $("#o-shop").innerHTML = opts;
+  document.querySelectorAll(".shop-select").forEach(el => (el.innerHTML = opts));
+}
+function minOrderDate() {
+  const d = new Date(Date.now() + 72 * 3600 * 1000);
+  return d.toISOString().slice(0, 10);
+}
+function wireForms() {
+  const date = $("#o-date");
+  date.min = minOrderDate();
+  date.value = date.min;
+  document.querySelectorAll("form.form").forEach(f => f.addEventListener("submit", e => {
+    e.preventDefault();
+    const msg = f.querySelector(".form-msg");
+    const bad = [...f.querySelectorAll("[required]")].find(el => !el.checkValidity());
+    if (bad) {
+      const name = f.querySelector(`label[for="${bad.id}"]`)?.textContent || "This field";
+      msg.textContent = date === bad && bad.value && bad.value < bad.min
+        ? `Pick a date on or after ${new Date(bad.min + "T12:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}. Custom orders need 72 hours.`
+        : `${name} is missing or doesn't look right.`;
+      msg.className = "form-msg is-error";
+      bad.focus();
+      return;
+    }
+    let to = "business@slodoco.com";
+    if (f.id === "order-form") to = SHOPS.find(s => s.id === $("#o-shop").value).orders;
+    msg.className = "form-msg is-ok";
+    msg.textContent = `${f.dataset.kind} sent. In the live site this goes straight to ${to}, and they'll reply by email.`;
+    f.reset();
+    if (f.id === "order-form") date.value = date.min;
+  }));
+  // "Start a wedding order" preselects the occasion
+  document.querySelectorAll("[data-occasion]").forEach(a => a.addEventListener("click", () => {
+    $("#o-occasion").value = a.dataset.occasion;
+  }));
+}
+
+// ---------- footer + nav
+function renderFoot() {
+  $("#foot-shops").innerHTML = SHOPS.map(s =>
+    `<li><strong>${esc(s.name)}</strong> ${esc(s.hours)}<br><a href="${tel(s)}">${esc(s.phone)}</a></li>`).join("");
+}
+function wireNav() {
+  const btn = $(".menu-btn"), nav = $("#nav");
+  btn.addEventListener("click", () => {
+    const open = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", String(!open));
+    nav.classList.toggle("open", !open);
+  });
+  nav.addEventListener("click", e => { if (e.target.tagName === "A") { nav.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); } });
+}
+
+renderBoard(); setInterval(renderBoard, 30000);
+renderSpecials();
+renderChips(); renderCase();
+$("#chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  activeCat = b.dataset.cat; renderChips(); renderCase();
+});
+$("#q").addEventListener("input", renderCase);
+$("#more").addEventListener("click", () => { expanded = true; renderCase(); });
+fillShopSelects(); wireForms(); renderFoot(); wireNav();

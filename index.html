@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SloDoCo Donuts · San Luis Obispo, Paso Robles &amp; Goleta</title>
+<meta name="description" content="Over 100 donuts made every day at four Central Coast shops. Foothill and Goleta are open 24/7. Custom orders, weddings and events.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="img/slodocoicon.webp">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#" aria-label="SloDoCo home"><span class="logo" aria-hidden="true"></span></a>
+    <button class="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav id="nav" class="nav" aria-label="Main">
+      <a href="#menu">Donuts</a>
+      <a href="#specials">October specials</a>
+      <a href="#shops">Shops &amp; hours</a>
+      <a href="#custom">Custom orders</a>
+      <a href="#weddings">Weddings &amp; events</a>
+      <a href="#jobs">Jobs</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero">
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <h1><span>Donuts for all.</span> <span>All for donuts.</span></h1>
+      <p class="lede">Over 100 donuts made fresh every single day at four Central Coast shops. Vegan and gluten-free too, and two of our shops never close.</p>
+      <div class="cta-row">
+        <a class="btn btn-ink" href="#menu">See today's donuts</a>
+        <a class="btn" href="#custom">Order a custom dozen</a>
+      </div>
+    </div>
+    <figure class="hero-pic">
+      <img src="img/slodocoicon.webp" width="900" height="900" alt="A stack of four frosted SloDoCo donuts next to a black SloDoCo coffee cup">
+    </figure>
+  </div>
+</section>
+
+<section id="shops" class="shops" aria-labelledby="shops-h">
+  <div class="wrap">
+    <div class="shops-head">
+      <h2 id="shops-h">Who's open right now</h2>
+      <p class="clock" id="clock"></p>
+    </div>
+    <ul class="board" id="board"></ul>
+  </div>
+</section>
+
+<section id="specials" class="specials" aria-labelledby="specials-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="specials-h">October specials</h2>
+      <p>Our creative bakers dream up a new lineup every month. These Halloween donuts are in the case all October. Each one comes out at its listed time and goes until we sell out.</p>
+    </div>
+    <ol class="special-list" id="specials-list"></ol>
+  </div>
+</section>
+
+<section id="menu" class="menu" aria-labelledby="menu-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="menu-h">In the case every day</h2>
+      <p>The everyday lineup at every shop. Can't pick one? Grab a dozen box and stop choosing. Allergies? Check the <a href="https://search.picknic.app/" target="_blank" rel="noopener">allergen guide</a> before you order.</p>
+    </div>
+    <div class="menu-tools">
+      <label class="search">
+        <span class="sr">Find a donut</span>
+        <input id="q" type="search" placeholder="Find a donut, like maple bacon" autocomplete="off">
+      </label>
+      <div class="chips" id="chips" role="group" aria-label="Filter by kind"></div>
+    </div>
+    <p class="count" id="count" aria-live="polite"></p>
+    <ul class="case" id="case"></ul>
+    <button class="btn more" id="more" type="button" hidden>Show all donuts</button>
+  </div>
+</section>
+
+<section id="custom" class="custom" aria-labelledby="custom-h">
+  <div class="wrap custom-in">
+    <div class="custom-copy">
+      <h2 id="custom-h">Custom dough, yo</h2>
+      <p>Any donut on the menu can get your own text, colors or piped details. Birthdays, office mornings, gender reveals, the big game. Tell us what you're picturing and the shop you pick will email you to confirm and settle the price.</p>
+      <ul class="ways">
+        <li><img src="img/Custom-Text.svg" alt="" width="56" height="56"><div><strong>Custom text</strong><span>Names, numbers, inside jokes</span></div></li>
+        <li><img src="img/Custom-Frosting.svg" alt="" width="56" height="56"><div><strong>Custom color</strong><span>Match your team, theme or party</span></div></li>
+        <li><img src="img/Custom.svg" alt="" width="56" height="56"><div><strong>Custom detail</strong><span>Piped designs, toppings, shapes</span></div></li>
+      </ul>
+      <p class="note">Please order at least 72 hours ahead. The calendar won't let you pick a date sooner than that.</p>
+    </div>
+
+    <form class="card form" id="order-form" novalidate data-kind="Custom order">
+      <h3>Request a custom order</h3>
+      <div class="field">
+        <label for="o-shop">Pick-up shop</label>
+        <select id="o-shop" name="shop" required></select>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="o-date">Pick-up date</label>
+          <input id="o-date" name="date" type="date" required>
+        </div>
+        <div class="field">
+          <label for="o-qty">How many</label>
+          <select id="o-qty" name="quantity">
+            <option>1 dozen</option><option>2 dozen</option><option>3 dozen</option>
+            <option>4–6 dozen</option><option>7+ dozen</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="o-occasion">What's it for?</label>
+        <select id="o-occasion" name="occasion">
+          <option>Birthday</option><option>Office or team</option><option>Wedding</option>
+          <option>Party or event</option><option>Just because</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="o-idea">Describe your donuts</label>
+        <textarea id="o-idea" name="idea" rows="4" required placeholder="e.g. A dozen raised donuts in Cal Poly green and gold, half spelling HAPPY 21 JESS"></textarea>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="o-name">Your name</label>
+          <input id="o-name" name="name" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="o-phone">Phone</label>
+          <input id="o-phone" name="phone" type="tel" autocomplete="tel">
+        </div>
+      </div>
+      <div class="field">
+        <label for="o-email">Email</label>
+        <input id="o-email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <button class="btn btn-ink btn-wide" type="submit">Send order request</button>
+      <p class="form-msg" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<section id="weddings" class="weddings" aria-labelledby="wed-h">
+  <div class="wrap">
+    <div class="wed-grid">
+      <div class="wed-copy">
+        <h2 id="wed-h">Tie the dough&#8209;knot</h2>
+        <p>Nearly a decade of donut walls, towers and dessert tables for hundreds of Central Coast couples. We'll do a tasting, match your colors and set it all up so you don't have to think about it.</p>
+        <p>Throwing something else? Grad parties, company events, fundraisers and film sets get the same treatment.</p>
+        <a class="btn btn-ink" href="#custom" data-occasion="Wedding">Start a wedding order</a>
+      </div>
+      <figure class="wed-a"><img src="img/0968_MG_0516-2.webp" alt="A long rustic dessert table lined with SloDoCo donuts under string lights" loading="lazy"></figure>
+      <figure class="wed-b"><img src="img/wedding-smranch-stand6.webp" alt="Tiered wire stands of glazed and cinnamon donuts with chalkboard flavor signs" loading="lazy"></figure>
+      <figure class="wed-c"><img src="img/LindenCloverWonderland-0168.webp" alt="A garden wedding dessert display with donut towers on a white dresser" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<section class="give" aria-labelledby="give-h">
+  <div class="wrap give-in">
+    <div>
+      <h2 id="give-h">Raising dough for good</h2>
+      <p>Every month we give 15 dozen donuts to a local cause. Tell us about yours and you could be next. Pick-up is at our Foothill shop in San Luis Obispo.</p>
+    </div>
+    <details class="card give-form">
+      <summary class="btn">Apply for a donation</summary>
+      <form class="form" novalidate data-kind="Donation request">
+        <div class="field"><label for="d-org">Organization or cause</label><input id="d-org" name="organization" required></div>
+        <div class="field"><label for="d-about">Tell us about it</label><textarea id="d-about" name="about" rows="3" required></textarea></div>
+        <fieldset class="field"><legend>Is it a 501(c) nonprofit?</legend>
+          <label class="inline"><input type="radio" name="nonprofit" value="Yes" required> Yes</label>
+          <label class="inline"><input type="radio" name="nonprofit" value="No"> No</label>
+        </fieldset>
+        <div class="row2">
+          <div class="field"><label for="d-name">Your name</label><input id="d-name" name="name" required></div>
+          <div class="field"><label for="d-email">Email</label><input id="d-email" name="email" type="email" required></div>
+        </div>
+        <button class="btn btn-ink btn-wide" type="submit">Send application</button>
+        <p class="form-msg" role="status"></p>
+      </form>
+    </details>
+  </div>
+</section>
+
+<section id="jobs" class="jobs" aria-labelledby="jobs-h">
+  <div class="wrap jobs-in">
+    <figure class="jobs-pic"><img src="img/31326641_183673375792805_2178620155146272768_n.webp" alt="The SloDoCo crew posing in front of the shop's orange-and-tan storefront" loading="lazy"></figure>
+    <div>
+      <h2 id="jobs-h">Join Team SloDoCo</h2>
+      <p>We're hiring at all four shops, with shifts around the clock, so it works around classes.</p>
+      <dl class="roles">
+        <div><dt>Donut Slinger</dt><dd>Front counter, coffee and boxing up dozens. Mornings, afternoons, evenings and graveyards.</dd></div>
+        <div><dt>Creative Baker</dt><dd>Frying, filling and decorating, including the monthly specials and custom orders.</dd></div>
+      </dl>
+      <details class="card job-form">
+        <summary class="btn btn-ink">Apply now</summary>
+        <form class="form" novalidate data-kind="Job application">
+          <div class="row2">
+            <div class="field"><label for="j-role">Position</label><select id="j-role" name="position"><option>Donut Slinger</option><option>Creative Baker</option></select></div>
+            <div class="field"><label for="j-shop">Shop</label><select id="j-shop" name="shop" class="shop-select"></select></div>
+          </div>
+          <fieldset class="field"><legend>Shifts you can work</legend>
+            <label class="inline"><input type="checkbox" name="shifts" value="Mornings"> Mornings (4 AM–12 PM)</label>
+            <label class="inline"><input type="checkbox" name="shifts" value="Afternoons"> Afternoons (12–6 PM)</label>
+            <label class="inline"><input type="checkbox" name="shifts" value="Evenings"> Evenings (4 PM–12 AM)</label>
+            <label class="inline"><input type="checkbox" name="shifts" value="Graveyards"> Graveyards (8 PM–6 AM)</label>
+          </fieldset>
+          <div class="row2">
+            <div class="field"><label for="j-name">Name</label><input id="j-name" name="name" required></div>
+            <div class="field"><label for="j-phone">Phone</label><input id="j-phone" name="phone" type="tel" required></div>
+          </div>
+          <div class="field"><label for="j-email">Email</label><input id="j-email" name="email" type="email" required></div>
+          <div class="field"><label for="j-why">Why SloDoCo?</label><textarea id="j-why" name="why" rows="3" required></textarea></div>
+          <button class="btn btn-ink btn-wide" type="submit">Send application</button>
+          <p class="form-msg" role="status"></p>
+        </form>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div>
+      <span class="logo logo-foot" aria-hidden="true"></span>
+      <p>We like photos of donuts. We like you.<br><a href="https://www.instagram.com/slodoco/" target="_blank" rel="noopener">Follow @slodoco on Instagram</a></p>
+    </div>
+    <ul class="foot-shops" id="foot-shops"></ul>
+  </div>
+  <div class="wrap foot-base">
+    <p>© 2026 SLO Donut Company</p>
+    <p class="demo-note">Sample redesign for SloDoCo. Forms are in demo mode.</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
