@@ -115,9 +115,11 @@ function renderCase() {
     ? `${items.length} ${items.length === 1 ? "donut" : "donuts"}${activeCat !== "All" ? " in " + activeCat : ""}${q ? ` matching “${$("#q").value.trim()}”` : ""}`
     : `Nothing matches “${$("#q").value.trim()}”. Try a flavor like maple, chocolate or lavender.`;
   // The full case is long: start with a few rows unless they've filtered or searched.
-  const shown = !expanded && activeCat === "All" && !q ? items.slice(0, PREVIEW) : items;
-  $("#more").hidden = shown.length === items.length;
-  $("#more").textContent = `Show all ${items.length} donuts`;
+  const collapsible = activeCat === "All" && !q && items.length > PREVIEW;
+  const shown = collapsible && !expanded ? items.slice(0, PREVIEW) : items;
+  $("#more").hidden = !collapsible;
+  $("#more").textContent = expanded ? "Show fewer donuts" : `Show all ${items.length} donuts`;
+  $("#more").setAttribute("aria-expanded", String(expanded));
   $("#case").innerHTML = shown.map(it => `<li class="donut">
     ${it.img ? `<img src="img/${it.img}" alt="" loading="lazy" width="210" height="175">` : `<span class="noimg" aria-hidden="true"></span>`}
     <span class="d-name">${esc(it.name)}</span>
@@ -188,5 +190,10 @@ $("#chips").addEventListener("click", e => {
   activeCat = b.dataset.cat; renderChips(); renderCase();
 });
 $("#q").addEventListener("input", renderCase);
-$("#more").addEventListener("click", () => { expanded = true; renderCase(); });
+$("#more").addEventListener("click", () => {
+  expanded = !expanded;
+  renderCase();
+  // Collapsing from the bottom of a long list: bring the menu back into view.
+  if (!expanded) $("#menu").scrollIntoView({ block: "start" });
+});
 fillShopSelects(); wireForms(); renderFoot(); wireNav();
