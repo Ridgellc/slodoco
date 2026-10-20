@@ -134,7 +134,12 @@ h1 span { display: block; white-space: nowrap; }
 .field label, .field legend { font-weight: 700; font-size: .95rem; padding: 0; }
 .field input, .field select, .field textarea { font: 500 1rem var(--body); color: var(--ink); padding: .7em .85em; border: 2px solid var(--ink); border-radius: 12px; background: var(--paper); width: 100%; }
 .field textarea { resize: vertical; }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+.row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 14px; }
+/* iPhone Safari gives date inputs a fixed built-in width that ignores width:100%,
+   so the pick-up date poked out of its column on phones. */
+.field input[type="date"] { -webkit-appearance: none; appearance: none; min-width: 0; max-width: 100%; display: block; min-height: 2.9em; }
+.field input[type="date"]::-webkit-date-and-time-value { text-align: left; }
+@media (max-width: 360px) { .row2 { grid-template-columns: 1fr; } }
 label.inline { display: flex; align-items: center; gap: 8px; font-weight: 500; }
 label.inline input { width: auto; accent-color: var(--ink); }
 .form-msg { margin: 14px 0 0; font-weight: 700; min-height: 1.4em; }
