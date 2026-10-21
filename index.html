@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="180x180" href="img/apple-touch-icon.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -119,17 +119,17 @@
       <h2 id="menu-h">In the case every day</h2>
       <p>The everyday lineup at every shop. Allergies? Check the <a href="https://search.picknic.app/" target="_blank" rel="noopener">allergen guide</a> before you order.</p>
     </div>
+    <div class="tabs-scroll">
+      <div class="tabs" id="chips" role="group" aria-label="Filter by kind"></div>
+    </div>
     <div class="menu-tools">
+      <p class="count" id="count" aria-live="polite"></p>
       <label class="search">
         <svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4.25 4.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         <span class="sr">Find a donut</span>
         <input id="q" type="search" placeholder="Search donuts" autocomplete="off">
       </label>
-      <div class="tabs-scroll">
-        <div class="tabs" id="chips" role="group" aria-label="Filter by kind"></div>
-      </div>
     </div>
-    <p class="count" id="count" aria-live="polite"></p>
     <ul class="case" id="case"></ul>
     <div class="more-row" id="more-row" hidden>
       <button class="btn more" id="more" type="button">Show all donuts</button>

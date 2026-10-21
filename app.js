@@ -111,10 +111,21 @@ function renderFeed() {
 // ---------- menu case
 let activeCat = "All", expanded = false;
 const PREVIEW = 12;
+// One photo stands in for each kind in the filter rail; "All" gets the seal.
+const COVERS = {
+  "Buttermilk": "Buttermilk_Glazed.webp", "Old Fashioned": "OldFashioned_Chocolate.webp", "Cake": "Cake_ChocolateSprinkle.webp",
+  "Devil's Food Cake": "DevilsFood_ChocolateSprinkle.webp", "Raised": "Raised_MarshmallowGalaxy.webp", "Filled": "Filled_Raspberry.webp",
+  "Bars & Twists": "Twist_Glazed.webp", "Pillows & Bear Claws": "BearClaw_Glazed.webp", "Cinnamon Rolls & Fritters": "Roll_Glazed.webp",
+  "Croissants": "Croissant_Plain.webp", "Gluten Free": "GlutenFreeLavenderDonut.webp",
+};
 function renderChips() {
   const cats = ["All", ...MENU.map(c => c.name)];
-  $("#chips").innerHTML = cats.map(c =>
-    `<button type="button" class="tab" aria-pressed="${c === activeCat}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+  $("#chips").innerHTML = cats.map(c => {
+    const pic = c === "All"
+      ? `<img class="tab-seal" src="img/seal.svg" alt="">`
+      : `<img src="img/${COVERS[c] || MENU.find(m => m.name === c).items[0].img}" alt="" loading="lazy">`;
+    return `<button type="button" class="tab" aria-pressed="${c === activeCat}" data-cat="${esc(c)}"><span class="tab-pic">${pic}</span><span class="tab-label">${esc(c)}</span></button>`;
+  }).join("");
 }
 function renderCase() {
   const q = $("#q").value.trim().toLowerCase();
@@ -137,7 +148,7 @@ function renderCase() {
   $("#more").innerHTML = `${expanded ? "Show fewer" : `Show all ${items.length} donuts`}<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   $("#more").setAttribute("aria-expanded", String(expanded));
   $("#case").innerHTML = shown.map(it => `<li class="donut">
-    ${it.img ? `<img src="img/${it.img}" alt="" loading="lazy" width="210" height="175">` : `<span class="noimg" aria-hidden="true"></span>`}
+    <span class="d-pic">${it.img ? `<img src="img/${it.img}" alt="" loading="lazy" width="210" height="175">` : ""}</span>
     <span class="d-name">${esc(it.name)}</span>
     <span class="d-cat">${esc(it.cat)}</span>
   </li>`).join("");
