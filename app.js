@@ -17,7 +17,7 @@ const SPECIALS = [
     text: "A chocolate bar topped with whipped cream ghosts and candy pumpkins." },
   { name: "The Itsy Bitsy Crunch", img: "Itsy-Bitsy-Crunch.webp", out: "9 AM", price: "$3.00",
     text: "Devil's food cake, chocolate icing and sprinkles, icing eyeballs and pretzel legs." },
-  { name: "Pumpkin Brûlée Bites", img: "Pumpkin-Brulee-Bites.webp", out: "10 AM", price: "75¢ each · $8.10 a dozen",
+  { name: "Pumpkin Brûlée Bites", img: "Pumpkin-Brulee-Bites.webp", out: "10 AM", price: "75¢ each, $8.10 a dozen",
     text: "Caramelized donut holes filled with pumpkin pie filling." },
   { name: "Coraline Raised", img: "Coraline-Raised.webp", out: "10 AM", price: "$3.80",
     text: "Marshmallow with candy buttons, or strawberry piped like the cake from Coraline." },
@@ -64,6 +64,8 @@ function renderBoard() {
   const now = pacificNow();
   const time = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", hour: "numeric", minute: "2-digit" }).format(new Date());
   $("#clock").textContent = `It's ${time} on ${now.day} on the Central Coast.`;
+  const open = SHOPS.filter(s => status(s, now).open).map(s => s.name);
+  $("#now").innerHTML = `<b>Open right now:</b> ${esc(open.join(", "))}`;
   $("#board").innerHTML = SHOPS.map(s => {
     const st = status(s, now);
     return `<li class="shop ${st.open ? "is-open" : "is-closed"}">
@@ -81,24 +83,36 @@ function renderBoard() {
 
 // ---------- specials
 function renderSpecials() {
-  $("#specials-list").innerHTML = SPECIALS.map(s => `<li class="special">
-    <img src="img/${s.img}" alt="${esc(s.name)} donut" loading="lazy">
-    <div class="special-body">
-      <h3>${esc(s.name)}</h3>
-      ${s.tag ? `<p class="tag">${esc(s.tag)}</p>` : ""}
-      <p>${esc(s.text)}</p>
-      <p class="meta"><span>Out by ${s.out}</span><span>${esc(s.price)}</span></p>
-    </div>
+  $("#specials-list").innerHTML = SPECIALS.map(s => `<li class="item">
+    <figure><img src="img/${s.img}" alt="${esc(s.name)} donut" loading="lazy"></figure>
+    <h3>${esc(s.name)}</h3>
+    ${s.tag ? `<p class="tag">${esc(s.tag)}</p>` : ""}
+    <p class="desc">${esc(s.text)}</p>
+    <p class="meta"><strong>${esc(s.price)}</strong><span>Out by ${s.out}</span></p>
   </li>`).join("");
+}
+
+// ---------- social grid (sample tiles; the live site swaps in a real Instagram feed)
+const FEED = [
+  ["slodocoicon.webp", "Four frosted donuts stacked next to a SLODOCO cup"],
+  ["IMG_6964.webp", "A hand buried in rainbow sprinkles"],
+  ["Raised_MarshmallowGalaxy.webp", "The marshmallow galaxy raised donut"],
+  ["Chocolate-Ghostface.webp", "The Chocolate Ghostface October special"],
+  ["CGL005.webp", "A wedding donut tower next to the cake"],
+  ["31326641_183673375792805_2178620155146272768_n.webp", "The crew outside the Foothill shop"],
+];
+function renderFeed() {
+  $("#feed").innerHTML = FEED.map(([img, alt]) => `<li><a href="https://www.instagram.com/slodoco/" target="_blank" rel="noopener">
+    <img src="img/${img}" alt="${esc(alt)}" loading="lazy"></a></li>`).join("");
 }
 
 // ---------- menu case
 let activeCat = "All", expanded = false;
-const PREVIEW = 14;
+const PREVIEW = 12;
 function renderChips() {
   const cats = ["All", ...MENU.map(c => c.name)];
   $("#chips").innerHTML = cats.map(c =>
-    `<button type="button" class="chip" aria-pressed="${c === activeCat}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+    `<button type="button" class="tab" aria-pressed="${c === activeCat}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
 }
 function renderCase() {
   const q = $("#q").value.trim().toLowerCase();
@@ -141,7 +155,7 @@ function wireForms() {
   const date = $("#o-date");
   date.min = minOrderDate();
   date.value = date.min;
-  document.querySelectorAll("form.form").forEach(f => f.addEventListener("submit", e => {
+  document.querySelectorAll("form[data-kind]").forEach(f => f.addEventListener("submit", e => {
     e.preventDefault();
     const msg = f.querySelector(".form-msg");
     const bad = [...f.querySelectorAll("[required]")].find(el => !el.checkValidity());
@@ -157,7 +171,9 @@ function wireForms() {
     let to = "business@slodoco.com";
     if (f.id === "order-form") to = SHOPS.find(s => s.id === $("#o-shop").value).orders;
     msg.className = "form-msg is-ok";
-    msg.textContent = `${f.dataset.kind} sent. In the live site this goes straight to ${to}, and they'll reply by email.`;
+    msg.textContent = f.classList.contains("kit-form")
+      ? "You're on the list. In the live site this joins the kit store's email list, and you hear first when it launches."
+      : `${f.dataset.kind} sent. In the live site this goes straight to ${to}, and they'll reply by email.`;
     f.reset();
     if (f.id === "order-form") date.value = date.min;
   }));
@@ -170,7 +186,7 @@ function wireForms() {
 // ---------- footer + nav
 function renderFoot() {
   $("#foot-shops").innerHTML = SHOPS.map(s =>
-    `<li><strong>${esc(s.name)}</strong> ${esc(s.hours)}<br><a href="${tel(s)}">${esc(s.phone)}</a></li>`).join("");
+    `<li><strong>${esc(s.name)}</strong><span>${esc(s.hours)}</span><span>${esc(s.address)}</span><a href="${tel(s)}">${esc(s.phone)}</a></li>`).join("");
 }
 function wireNav() {
   const btn = $(".menu-btn"), nav = $("#nav");
@@ -183,10 +199,10 @@ function wireNav() {
 }
 
 renderBoard(); setInterval(renderBoard, 30000);
-renderSpecials();
+renderSpecials(); renderFeed();
 renderChips(); renderCase();
 $("#chips").addEventListener("click", e => {
-  const b = e.target.closest(".chip"); if (!b) return;
+  const b = e.target.closest(".tab"); if (!b) return;
   activeCat = b.dataset.cat; renderChips(); renderCase();
 });
 $("#q").addEventListener("input", renderCase);
