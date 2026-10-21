@@ -69,13 +69,15 @@ function renderBoard() {
   $("#board").innerHTML = SHOPS.map(s => {
     const st = status(s, now);
     return `<li class="shop ${st.open ? "is-open" : "is-closed"}">
-      <h3>${esc(s.name)}</h3>
-      <p class="state"><span class="dot" aria-hidden="true"></span>${st.line}</p>
+      <div class="shop-top">
+        <h3>${esc(s.name)}</h3>
+        <span class="badge">${st.line}</span>
+      </div>
       <p class="sub">${esc(st.sub)}</p>
       <p class="addr">${esc(s.address)}<br>${esc(s.city)}</p>
       <div class="shop-links">
-        <a href="${tel(s)}">Call ${esc(s.phone)}</a>
-        <a href="${mapLink(s)}" target="_blank" rel="noopener">Directions</a>
+        <a class="btn btn-sm" href="${mapLink(s)}" target="_blank" rel="noopener">Directions</a>
+        <a class="phone" href="${tel(s)}">${esc(s.phone)}</a>
       </div>
     </li>`;
   }).join("");
@@ -131,8 +133,8 @@ function renderCase() {
   // The full case is long: start with a few rows unless they've filtered or searched.
   const collapsible = activeCat === "All" && !q && items.length > PREVIEW;
   const shown = collapsible && !expanded ? items.slice(0, PREVIEW) : items;
-  $("#more").hidden = !collapsible;
-  $("#more").textContent = expanded ? "Show fewer donuts" : `Show all ${items.length} donuts`;
+  $("#more-row").hidden = !collapsible;
+  $("#more").innerHTML = `${expanded ? "Show fewer" : `Show all ${items.length} donuts`}<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M3.5 6l4.5 4.5L12.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   $("#more").setAttribute("aria-expanded", String(expanded));
   $("#case").innerHTML = shown.map(it => `<li class="donut">
     ${it.img ? `<img src="img/${it.img}" alt="" loading="lazy" width="210" height="175">` : `<span class="noimg" aria-hidden="true"></span>`}
@@ -196,6 +198,19 @@ function wireNav() {
     nav.classList.toggle("open", !open);
   });
   nav.addEventListener("click", e => { if (e.target.tagName === "A") { nav.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); } });
+  // Once the big logo scrolls away, the sticky bar shows the small seal and the order button.
+  new IntersectionObserver(([e]) => $("#bar").classList.toggle("is-stuck", !e.isIntersecting)).observe($(".top"));
+}
+// Fade the filter row's edge only when there's more to scroll to.
+function wireTabsFade() {
+  const sc = $(".tabs-scroll");
+  const update = () => {
+    sc.classList.toggle("fade-l", sc.scrollLeft > 4);
+    sc.classList.toggle("fade-r", sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 4);
+  };
+  sc.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  update();
 }
 
 renderBoard(); setInterval(renderBoard, 30000);
@@ -212,4 +227,4 @@ $("#more").addEventListener("click", () => {
   // Collapsing from the bottom of a long list: bring the menu back into view.
   if (!expanded) $("#menu").scrollIntoView({ block: "start" });
 });
-fillShopSelects(); wireForms(); renderFoot(); wireNav();
+fillShopSelects(); wireForms(); renderFoot(); wireNav(); wireTabsFade();
